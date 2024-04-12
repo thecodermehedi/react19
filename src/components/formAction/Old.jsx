@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useState} from "react";
 
 // PostItem component
 const PostItem = ({post}) => {
@@ -11,9 +11,12 @@ const PostItem = ({post}) => {
 };
 // PostForm component
 const PostForm = ({addPost}) => {
-  const formRef = useRef();
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
 
-  const formAction = async (formData) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     // delay
     await new Promise((resolve) => {
       setTimeout(() => {
@@ -21,14 +24,12 @@ const PostForm = ({addPost}) => {
       }, 1000);
     });
 
-    addPost({title: formData.get("title"), body: formData.get("body")});
-    formRef.current.reset();
+    addPost({title, body});
   };
 
   return (
     <form
-      ref={formRef}
-      action={formAction}
+      onSubmit={handleSubmit}
       className="bg-white border border-gray-200 rounded px-8 pt-6 pb-8 mb-4"
     >
       <div className="mb-4">
@@ -44,6 +45,7 @@ const PostForm = ({addPost}) => {
           type="text"
           placeholder="Enter title"
           name="title"
+          onChange={(e) => setTitle(e.target.value)}
         />
       </div>
       <div className="mb-6">
@@ -59,6 +61,7 @@ const PostForm = ({addPost}) => {
           rows="5"
           placeholder="Enter body"
           name="body"
+          onChange={(e) => setBody(e.target.value)}
         ></textarea>
       </div>
       <div className="flex items-center justify-between">
@@ -74,7 +77,8 @@ const PostForm = ({addPost}) => {
 };
 
 // Posts component
-const FormActionOld = () => {
+const FormActionOld = () =>
+ {
   const [posts, setPosts] = useState([]);
 
   const addPost = (newPost) => {
